@@ -92,7 +92,8 @@ RUN cd /opt &&\
     ./configure --with-oci8=instantclient,/opt/oracle/instantclient_12_2/ &&\
     make install &&\
     echo 'instantclient,/opt/oracle/instantclient_12_2' | pecl install oci8 &&\
-    echo extension=oci8.so >> /etc/php/7.1/apache2/php.ini
+    echo extension=oci8.so >> /etc/php/7.1/apache2/php.ini &&\
+    echo extension=oci8.so >> /etc/php/7.1/cli/php.ini
 
 
 # install locales
