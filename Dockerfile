@@ -29,8 +29,9 @@ RUN apt-get install -y \
      php7.1-dev \
      libaio1
 
+RUN pecl -v
 
-# Laravel PDF generator dependecies
+# Laravel PDF generator 1-devpendecies
 RUN apt-get install -y libxrender1 libfontconfig libxext6
 
 # install pre requisites
@@ -43,8 +44,9 @@ RUN apt-get install -y unixodbc-utf16
 RUN apt-get install -y unixodbc-dev-utf16
 
 # install driver sqlsrv
-RUN pecl install sqlsrv
-RUN pecl install pdo_sqlsrv
+RUN pecl channel-update pecl.php.net
+RUN pecl install sqlsrv-5.6.0
+RUN pecl install pdo_sqlsrv-5.6.0
 
 RUN echo extension=pdo_sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini
 RUN echo extension=sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini
@@ -53,11 +55,6 @@ RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.1/apache2/conf.d/30-pdo_sqlsrv.
 RUN echo "extension=sqlsrv.so" >> /etc/php/7.1/apache2/conf.d/20-sqlsrv.ini
 RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.1/cli/conf.d/30-pdo_sqlsrv.ini
 RUN echo "extension=sqlsrv.so" >> /etc/php/7.1/cli/conf.d/20-sqlsrv.ini
-
-# install composer
-RUN curl -sS https://getcomposer.org/installer | php
-RUN chmod a+x composer.phar
-RUN mv composer.phar /usr/local/bin/composer
 
 # install ODBC Driver
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql mssql-tools unixodbc-dev
@@ -98,6 +95,11 @@ RUN cd /opt &&\
 
 # install locales
 RUN apt-get install -y locales && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+
+# install composer
+RUN curl -sS https://getcomposer.org/installer | php
+RUN chmod a+x composer.phar
+RUN mv composer.phar /usr/local/bin/composer
 
 # Enable Apache mod rewrite
 RUN /usr/sbin/a2enmod rewrite
