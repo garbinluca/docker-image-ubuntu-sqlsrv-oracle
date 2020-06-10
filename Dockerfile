@@ -10,23 +10,23 @@ RUN apt-get install -y \
      unzip \
      curl \
      git \
-     php7.1-cli \
-     php7.1 \
-     php7.1-curl \
-     php7.1-gd \
-     php7.1-json \
-     php7.1-ldap \
-     php7.1-mbstring \
-     php7.1-mysql \
-     php7.1-pgsql \
-     php7.1-sqlite3 \
-     php7.1-xml \
-     php7.1-xsl \
-     php7.1-zip \
-     php7.1-soap \
+     php7.2-cli \
+     php7.2 \
+     php7.2-curl \
+     php7.2-gd \
+     php7.2-json \
+     php7.2-ldap \
+     php7.2-mbstring \
+     php7.2-mysql \
+     php7.2-pgsql \
+     php7.2-sqlite3 \
+     php7.2-xml \
+     php7.2-xsl \
+     php7.2-zip \
+     php7.2-soap \
      ssh \
      php-pear \
-     php7.1-dev \
+     php7.2-dev \
      libaio1
 
 RUN pecl -v
@@ -51,10 +51,10 @@ RUN pecl install pdo_sqlsrv-5.6.0
 RUN echo extension=pdo_sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini
 RUN echo extension=sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini
 
-RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.1/apache2/conf.d/30-pdo_sqlsrv.ini
-RUN echo "extension=sqlsrv.so" >> /etc/php/7.1/apache2/conf.d/20-sqlsrv.ini
-RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.1/cli/conf.d/30-pdo_sqlsrv.ini
-RUN echo "extension=sqlsrv.so" >> /etc/php/7.1/cli/conf.d/20-sqlsrv.ini
+RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.2/apache2/conf.d/30-pdo_sqlsrv.ini
+RUN echo "extension=sqlsrv.so" >> /etc/php/7.2/apache2/conf.d/20-sqlsrv.ini
+RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.2/cli/conf.d/30-pdo_sqlsrv.ini
+RUN echo "extension=sqlsrv.so" >> /etc/php/7.2/cli/conf.d/20-sqlsrv.ini
 
 # install ODBC Driver
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql mssql-tools unixodbc-dev
@@ -89,8 +89,8 @@ RUN cd /opt &&\
     ./configure --with-oci8=instantclient,/opt/oracle/instantclient_12_2/ &&\
     make install &&\
     echo 'instantclient,/opt/oracle/instantclient_12_2' | pecl install oci8 &&\
-    echo extension=oci8.so >> /etc/php/7.1/apache2/php.ini &&\
-    echo extension=oci8.so >> /etc/php/7.1/cli/php.ini
+    echo extension=oci8.so >> /etc/php/7.2/apache2/php.ini &&\
+    echo extension=oci8.so >> /etc/php/7.2/cli/php.ini
 
 
 # install locales
