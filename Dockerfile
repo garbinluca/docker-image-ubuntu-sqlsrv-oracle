@@ -27,7 +27,8 @@ RUN apt-get install -y \
      ssh \
      php-pear \
      php7.2-dev \
-     libaio1
+     libaio1 \
+     php-odbc
 
 RUN pecl -v
 
