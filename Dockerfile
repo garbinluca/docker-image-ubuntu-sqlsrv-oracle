@@ -29,7 +29,7 @@ RUN apt-get install -y \
      php7.2-dev \
      libaio1 \
      php-odbc \
-     php-imagick
+     apt-get install
 
 RUN pecl -v
 
@@ -92,8 +92,8 @@ RUN cd /opt &&\
     make install &&\
     echo 'instantclient,/opt/oracle/instantclient_12_2' | pecl install oci8 &&\
     echo extension=oci8.so >> /etc/php/7.2/apache2/php.ini &&\
-    echo extension=oci8.so >> /etc/php/7.2/cli/php.ini
-
+    echo extension=oci8.so >> /etc/php/7.2/cli/php.ini &&\
+    echo extension=imagick >> /etc/php/7.2/apache2/php.ini
 
 # install locales
 RUN apt-get install -y locales && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
