@@ -28,7 +28,8 @@ RUN apt-get install -y \
      php-pear \
      php7.2-dev \
      libaio1 \
-     php-odbc
+     php-odbc \
+     php-imagick
 
 RUN pecl -v
 
