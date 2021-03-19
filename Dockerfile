@@ -24,13 +24,13 @@ RUN apt-get update -y && apt-get install -y \
      php7.2-xsl \
      php7.2-zip \
      php7.2-soap \
+     php7.2-imagick \
      ssh \
      php-pear \
      php7.2-dev \
      libaio1 \
      php-odbc \
-     php7.2-pdo-odbc \
-     php-imagick
+     php7.2-pdo-odbc
 
 RUN pecl -v
 
