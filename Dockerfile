@@ -5,11 +5,11 @@ MAINTAINER Luca Garbin (service+github@lucagarbin.it)
 RUN apt-get update -y
 RUN apt-get install -y software-properties-common python-software-properties language-pack-en-base
 RUN LC_ALL=en_US.UTF-8 add-apt-repository -y ppa:ondrej/php
-RUN apt-get update -y
-RUN apt-get install -y \
+RUN apt-get update -y && apt-get install -y \
      unzip \
      curl \
      git \
+     vim \
      php7.2-cli \
      php7.2 \
      php7.2-curl \
@@ -28,7 +28,9 @@ RUN apt-get install -y \
      php-pear \
      php7.2-dev \
      libaio1 \
-     php-odbc
+     php-odbc \
+     php7.2-pdo-odbc \
+     php-imagick
 
 RUN pecl -v
 
@@ -41,8 +43,8 @@ RUN apt-get install -y apt-transport-https
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql mssql-tools
-RUN apt-get install -y unixodbc-utf16
-RUN apt-get install -y unixodbc-dev-utf16
+RUN apt-get install -y unixodbc
+RUN apt-get install -y unixodbc-dev
 
 # install driver sqlsrv
 RUN pecl channel-update pecl.php.net
@@ -83,13 +85,13 @@ RUN cd /opt &&\
     echo 'PATH=$PATH:/opt/oracle/instantclient_12_2' >> ~/.bashrc &&\
     echo "alias sqlplus='/usr/bin/rlwrap -m /opt/oracle/instantclient_12_2/sqlplus'" >> ~/.bashrc &&\
     cd /opt/oracle &&\
-    pecl download oci8 &&\
+    pecl download oci8-2.2.0 &&\
     tar -xzvf oci8*.tgz &&\
     cd oci8-2.2.0 &&\
     phpize &&\
     ./configure --with-oci8=instantclient,/opt/oracle/instantclient_12_2/ &&\
     make install &&\
-    echo 'instantclient,/opt/oracle/instantclient_12_2' | pecl install oci8 &&\
+    echo 'instantclient,/opt/oracle/instantclient_12_2' | pecl install oci8-2.2.0 &&\
     echo extension=oci8.so >> /etc/php/7.2/apache2/php.ini &&\
     echo extension=oci8.so >> /etc/php/7.2/cli/php.ini
 
