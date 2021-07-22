@@ -54,11 +54,6 @@ RUN pecl install pdo_sqlsrv-5.6.0
 RUN echo extension=pdo_sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini
 RUN echo extension=sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini
 
-RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.3/apache2/conf.d/30-pdo_sqlsrv.ini
-RUN echo "extension=sqlsrv.so" >> /etc/php/7.3/apache2/conf.d/20-sqlsrv.ini
-RUN echo "extension=pdo_sqlsrv.so" >> /etc/php/7.3/cli/conf.d/30-pdo_sqlsrv.ini
-RUN echo "extension=sqlsrv.so" >> /etc/php/7.3/cli/conf.d/20-sqlsrv.ini
-
 # install ODBC Driver
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql mssql-tools unixodbc-dev
 # RUN ACCEPT_EULA=Y apt-get install -y mssql-tools
