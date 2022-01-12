@@ -39,12 +39,6 @@ RUN apt-get -y install libmcrypt-dev
 # Laravel PDF generator 1-devpendecies
 RUN apt-get install -y libxrender1 libfontconfig libxext6
 
-# Install ext mcrypt
-RUN apt-get -y install gcc make autoconf libc-dev pkg-config
-RUN apt-get -y install libmcrypt-dev
-RUN pecl install mcrypt-1.0.2 -y
-RUN echo extension=mcrypt.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini
-
 # Install driver sql server
 RUN apt-get update
 RUN apt-get install -y apt-transport-https
@@ -96,8 +90,16 @@ RUN cd /opt &&\
     make install &&\
     echo 'instantclient,/opt/oracle/instantclient_12_2' | pecl install oci8-2.2.0 &&\
     echo extension=oci8.so >> /etc/php/7.3/apache2/php.ini &&\
-    echo extension=oci8.so >> /etc/php/7.3/cli/php.ini &&\
-    echo extension=imagick.so >> /etc/php/7.3/apache2/php.ini
+    echo extension=oci8.so >> /etc/php/7.3/cli/php.ini
+
+RUN echo extension=imagick.so >> /etc/php/7.3/apache2/php.ini
+
+# Install ext mcrypt
+RUN apt-get -y install gcc make autoconf libc-dev pkg-config
+RUN apt-get -y install libmcrypt-dev
+RUN pecl install mcrypt-1.0.2 -y
+RUN echo extension=mcrypt.so >> /etc/php/7.3/apache2/php.ini &&\
+    echo extension=mcrypt.so >> /etc/php/7.3/cli/php.ini
 
 # install locales
 RUN apt-get install -y locales && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
