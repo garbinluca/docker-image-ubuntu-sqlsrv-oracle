@@ -1,15 +1,17 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER Luca Garbin (service+github@lucagarbin.it)
 
 RUN apt-get update -y
-RUN apt-get install -y software-properties-common python-software-properties language-pack-en-base
+RUN apt-get install -y software-properties-common language-pack-en-base
 RUN LC_ALL=en_US.UTF-8 add-apt-repository -y ppa:ondrej/php
-RUN apt-get update -y && apt-get install -y \
+RUN apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -y \
      unzip \
      curl \
      git \
      vim \
+     ssh \
+     libaio1 \
      php7.3-cli \
      php7.3 \
      php7.3-curl \
@@ -25,24 +27,30 @@ RUN apt-get update -y && apt-get install -y \
      php7.3-zip \
      php7.3-soap \
      php7.3-imagick \
-     ssh \
      php-pear \
      php7.3-dev \
-     libaio1 \
      php-odbc \
      php7.3-pdo-odbc
 
 RUN pecl -v
 
+RUN apt-get -y install libmcrypt-dev
+
 # Laravel PDF generator 1-devpendecies
 RUN apt-get install -y libxrender1 libfontconfig libxext6
 
-# install pre requisites
+# Install ext mcrypt
+RUN apt-get -y install gcc make autoconf libc-dev pkg-config
+RUN apt-get -y install libmcrypt-dev
+RUN pecl install mcrypt-1.0.2 -y
+RUN echo extension=mcrypt.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini
+
+# Install driver sql server
 RUN apt-get update
 RUN apt-get install -y apt-transport-https
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql mssql-tools
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y libcurl3 msodbcsql mssql-tools
 RUN apt-get install -y unixodbc
 RUN apt-get install -y unixodbc-dev
 
@@ -55,7 +63,7 @@ RUN echo extension=pdo_sqlsrv.so >> `php --ini | grep "Scan for additional .ini 
 RUN echo extension=sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini
 
 # install ODBC Driver
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql mssql-tools unixodbc-dev
+# RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql mssql-tools unixodbc-dev
 # RUN ACCEPT_EULA=Y apt-get install -y mssql-tools
 # RUN ACCEPT_EULA=Y apt-get install -y unixodbc-dev
 RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
@@ -95,8 +103,10 @@ RUN cd /opt &&\
 RUN apt-get install -y locales && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
 # install composer
-RUN curl -sS https://getcomposer.org/installer | php
-RUN chmod a+x composer.phar
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 
 # Enable Apache mod rewrite
